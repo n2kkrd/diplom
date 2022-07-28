@@ -1,0 +1,98 @@
+{% extends 'layouts/base_layout.html' %}
+{% block content %}
+
+
+
+    <div id="staff_report" class="modal modal-fixed-footer">
+        <form method="post">
+            {% csrf_token %}
+            <div class="modal-content">
+                <h4>Добавить показатели за год</h4>
+                <br>
+
+                <h5>Год</h5>
+                <div class='input-field col s12'>
+                    {{ form.title }}
+                    <label for='{{ form.title }}'>Год</label>
+                </div>
+
+                <br>
+                <h5>Экономическая эффективность</h5>
+                <div class='input-field col s12'>
+                    {{ form.value_product }}
+                    <label for='{{ form.value_product }}'>Объём реализованной продукции</label>
+                </div>
+                <div class='input-field col s12'>
+                    {{ form.fond_zp }}
+                    <label for='{{ form.fond_zp }}'>Фонд заработной платы</label>
+                </div>
+                <div class='input-field col s12'>
+                    {{ form.average_annual_value_capital }}
+                    <label for='{{ form.average_annual_value_capital }}'>Среднегодовая стоимость оборотных средств</label>
+                </div>
+                <div class='input-field col s12'>
+                    {{ form.average_annual_value_fond }}
+                    <label for='{{ form.average_annual_value_fond }}'>Среднегодовая стоимость основных фондов</label>
+                </div>
+
+                <br>
+                <h5>Социальная эффективность</h5>
+                <div class='input-field col s12'>
+                    {{ form.w }}
+                    <label for='{{ form.w }}'>Выработка</label>
+                </div>
+                <div class='input-field col s12'>
+                    {{ form.average_zp }}
+                    <label for='{{ form.average_zp }}'>Среднегодовая заработная плата одного работника</label>
+                </div>
+
+                <br>
+                <h5>Финансовая эффективность</h5>
+                <div class='input-field col s12'>
+                    {{ form.profit_before_tax }}
+                    <label for='{{ form.profit_before_tax }}'>Приболь до налогообложения</label>
+                </div>
+            </div>
+
+
+            <div class="modal-footer">
+                <button class="modal-action modal-close waves-effect waves-green btn-flat" type="submit">Добавить
+                </button>
+            </div>
+        </form>
+
+
+    </div>
+
+    <div class="row">
+        <div class="container" style="text-align: center;">
+            <br>
+            <H3>Интегральные показатели</H3>
+            <table class="table striped">
+                <thead>
+                    <tr>
+                        <th>Год</th>
+                        <th>Экономическая эффективность</th>
+                        <th>Социальная эффективность</th>
+                        <th>Финансовая эффективность</th>
+                        <th>Общая оценка</th>
+                    </tr>
+                </thead>
+                {% for year in years %}
+                    <tr>
+                        <th>{{ year.title }}</th>
+                        <th>{{ year.economy_effectiveness|floatformat:2 }}</th>
+                        <th>{{ year.soc_effectiveness|floatformat:2 }}</th>
+                        <th>{{ year.financial_efficiency|floatformat:2 }}</th>
+                        <th>{{ year.indicators_of_the_use_resources|floatformat:2 }}</th>
+                    </tr>
+                {% endfor %}
+                <tbody>
+
+                </tbody>
+            </table>
+            <br>
+            <a class="waves-effect waves-light btn modal-trigger" href="#staff_report">Добавить показатели за год</a>
+        </div>
+    </div>
+{% endblock content %}

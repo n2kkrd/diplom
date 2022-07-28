@@ -1,0 +1,73 @@
+{% extends "layouts/base_fullscrin.html" %}
+{% block content %}
+    <div class="section"></div>
+    <main>
+        <center>
+            <div class="section"></div>
+
+            <div class="container">
+                <div class="z-depth-1 grey lighten-4 row"
+                     style="display: inline-block; padding: 32px 48px 0px 48px; border: 1px solid #EEE;">
+
+                    <form class="col s12" method="post">
+                        {% csrf_token %}
+
+                        <div class='row'>
+                            <span class="red-text">{{ form.username.errors }}</span>
+                            <div class='input-field col s12'>
+                                {{ form.username }}
+                                <label>Enter your username</label>
+                            </div>
+                        </div>
+
+                        <div class='row'>
+                            <span class="red-text">{{ form.first_name.errors }}</span>
+                            <div class='input-field col s12'>
+                                {{ form.first_name }}
+                                <label>Enter your first name</label>
+                            </div>
+                        </div>
+
+                        <div class='row'>
+                            <span class="red-text">{{ form.last_name.errors }}</span>
+                            <div class='input-field col s12'>
+                                {{ form.last_name }}
+                                <label>Enter your last name</label>
+                            </div>
+                        </div>
+
+                        <div class='row'>
+                            <span class="red-text">{{ form.password1.errors }}</span>
+                            <div class='input-field col s12'>
+                                {{ form.password1 }}
+                                <label>Enter your password</label>
+                            </div>
+                        </div>
+
+                        <div class='row'>
+                            <span class="red-text">{{ form.password2.errors }}</span>
+                            <div class='input-field col s12'>
+                                {{ form.password2 }}
+                                <label>Repeat Password</label>
+                            </div>
+                            <br>
+                        </div>
+
+
+                        <br/>
+                        <div style="text-align: center;">
+
+                            <div class='row'>
+                                <button type='submit'
+                                        class='col s12 btn btn-large waves-effect red accent-2'>Signup
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <a href="{% url 'login' %}">Login</a>
+        </center>
+    </main>
+
+{% endblock content %}

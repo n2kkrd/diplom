@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{{ title }}</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/materialize.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/ymCal.css' %}" type="text/css">
+</head>
+<body>
+<script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script>
+<script src="{% static 'js/ymCal.js' %}"></script>
+
+
+<ul id="dropdown1" class="dropdown-content">
+    <li><a href="{% url 'logout' %}">Logout</a></li>
+</ul>
+
+<nav>
+    <div class="nav-wrapper">
+        <a href="{% url 'home' %}" class="brand-logo">КУБГУ</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li {% if title == 'Сотрудники' %}                  class="active"{% endif %}><a href="{% url 'staff' %}">             Сотрудники             </a>
+            </li>
+            <li {% if title == 'Критерии' %}                    class="active"{% endif %}><a href="{% url 'criteria' %}">          Критерии               </a>
+            </li>
+            <li {% if title == 'Отчеты' %}                      class="active"{% endif %}><a href="{% url 'big_report' %}">        Отчеты                 </a>
+            <li {% if title == 'Интегральный показатель' %}     class="active"{% endif %}><a href="{% url 'integral_indicator' %}">Интегральный показатель</a>
+            </li>
+            <li>
+                <a class="dropdown-button" data-activates="dropdown1">{{ user }}
+                    <img src="{% static 'img/icons/arrow_drop_down.png' %}" class="material-icons right">
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+{% block content %}
+    Нет контента
+{% endblock %}
+
+<script>
+    $(document).ready(function () {
+
+        $('.modal').modal();
+        $('.collapsible').collapsible();
+        $('select').material_select();
+
+        $('.dropdown-button').dropdown({
+                inDuration: 300,
+                outDuration: 225,
+                constrainWidth: false, // Does not change width of dropdown to that of the activator
+                hover: false, // Activate on hover
+                gutter: 0, // Spacing from edge
+                belowOrigin: true, // Displays dropdown below the button
+                alignment: 'left', // Displays dropdown with edge aligned to the left of button
+                stopPropagation: false // Stops event propagation
+            }
+        );
+    });
+</script>
+{% block javascript %}{% endblock javascript %}
+
+</body>
+</html>
+
+
+

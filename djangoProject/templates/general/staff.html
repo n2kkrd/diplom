@@ -1,0 +1,107 @@
+{% extends 'layouts/base_layout.html' %}
+{% block content %}
+
+    <!-- Modal new_report Structure -->
+    <div id="report" class="modal modal-fixed-footer">
+        <div class="modal-content">
+            <h4>Добавить отчет</h4>
+            <div style="text-align: center;">
+                <div class='row'>
+                    <div class='input-field col s12'>
+                        <select id="myselect">
+                            <option value="" disabled selected>Сотрудник</option>
+                            {% for s in staff %}
+                                <option value="{{ s.id }}">{{ s.first_name }} {{ s.last_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for='staff'>Выберите сотрудника</label>
+                    </div>
+                    <a class="waves-effect waves-light btn left" id="ymPicker" style="background: #a48282;">Выберите
+                        месяц</a>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-action modal-close waves-effect waves-green btn-flat" onclick="reprot()">Создать
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Modal add_staff Structure -->
+    <div id="add_staff" class="modal">
+        <form class="col s12" method="post">
+            <div class="modal-content">
+                <h4>Добавить сотрудника</h4>
+                <div style="text-align: center;">
+                    {% csrf_token %}
+                    {% if msg %}
+                        <div class='row'>
+                            <span class="red-text">{{ msg }}</span>
+                        </div>
+                    {% endif %}
+                    <div class='row'>
+                        <div class='input-field col s12'>
+                            {{ staff_form.first_name }}
+                            <label for='username'>Введите имя</label>
+                        </div>
+                        <div class='input-field col s12'>
+                            {{ staff_form.last_name }}
+                            <label for='last_name'>Введите фамилию</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="modal-action modal-close waves-effect waves-green btn-flat">Добавить
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div style="text-align: center;">
+        <div class="container">
+
+            <H3>Сотрудники</H3>
+            <ul class="collection with-header">
+                {% for s in staff %}
+                    <li class="collection-item"><h5>{{ s.first_name }} {{ s.last_name }}</h5></li>
+                {% endfor %}
+
+            </ul>
+
+            <a class="waves-effect waves-light btn modal-trigger" href="#add_staff">Добавить сотрудника</a>
+            <a class="waves-effect waves-light btn modal-trigger" href="#report">Добавить отчет</a>
+
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascript %}
+    <script>
+
+        let ym = ymCal(
+            $("#ymPicker"),
+            null,
+            "bottom",
+            null,
+            null,
+            function (event, month, year, misc) {
+                console.log("event=" + event + "; month=" + month + "; year=" + year);
+            },
+            5000,
+            -8
+        );
+
+        function reprot() {
+            let staff = document.getElementsByClassName("select-dropdown")[0].value.split(' ');
+            let staff_first_name = staff[0];
+            let staff_last_name = staff[1];
+
+            let date = ym.get();
+
+            document.location.href = `{% url 'report' %}?first_name=${staff_first_name}&last_name=${staff_last_name}&year=${date.year}&month=${date.month}`
+        }
+    </script>
+{% endblock javascript %}

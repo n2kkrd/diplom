@@ -1,0 +1,15 @@
+{% extends 'layouts/base_layout.html' %}
+
+{% block content %}
+    <div class="container center">
+        <h3>{{ report_obj.first_year }}.{{ report_obj.first_month }} - {{ report_obj.last_year }}.{{ report_obj.last_month }}</h3>
+
+        {% for criteria in report_obj.criteria.all %}
+            <div class="input-field col s6">
+                <input type="text" disabled value="{{ criteria.value }}">
+                <label for="{{ criteria.title }}">{{ criteria.title }}</label>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock content %}

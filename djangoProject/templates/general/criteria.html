@@ -1,0 +1,75 @@
+{% extends 'layouts/base_layout.html' %}
+
+{% block content %}
+    <div id="new_criteria" class="modal modal-fixed-footer" style="height: 75%">
+        <form class="col s12" method="post">
+            <div class="modal-content">
+                <h4>Новый критерий</h4>
+
+                <div style="text-align: center;">
+                    {% csrf_token %}
+
+                    <div class='row'>
+                        <div class='input-field col s12'>
+                            {{ form.title }}
+                            <label for='title'>Критерий</label>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="modal-action modal-close waves-effect waves-green btn-flat">
+                    Добавить критерий
+                </button>
+            </div>
+        </form>
+    </div>
+
+
+    <div>
+        <div class="container">
+            <H3>Критерии оценки</H3>
+            <ul class="collection with-header">
+
+                <li class="collection-item">
+                    {% for i in criteria %}
+                        <div>{{ i.title }}<a href="#!" class="secondary-content"><i class="material-icons" onclick="delete_criteria({{ i.id }})">delete</i></a></div>
+                        <br>
+                    {% endfor %}
+                </li>
+            </ul>
+
+            <a data-target="new_criteria" class="btn modal-trigger">Добавить критерий</a>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        function delete_criteria(id_criteria) {
+            let cookie = document.cookie
+            let csrfToken = cookie.substring(cookie.indexOf('=') + 1)
+
+            $.ajax({
+                type: "DELETE",
+                url: "{% url 'criteria' %}",
+                data: {
+                    id: id_criteria
+                },
+                success: function () {
+                    console.log('success')
+                    location.href = '{% url 'criteria' %}'
+                },
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                },
+                contentType: "application/x-www-form-urlencoded"
+            });
+        }
+    </script>
+{% endblock javascript %}

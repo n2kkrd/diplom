@@ -1,0 +1,50 @@
+{% extends 'layouts/base_layout.html' %}
+
+{% block content %}
+    <div>
+        <div class="container">
+            <H3>{{ month_obj.year.staff.first_name }} {{ month_obj.year.staff.last_name }}
+                - {{ month_obj.year.title }} {{ month_obj }}</H3>
+
+            {% for criteria in month_obj.criteria.all %}
+                <div class="input-field col s6">
+                    <input placeholder="Заполните поле" id="{{ criteria.id }}" type="text" value="{{ criteria.value }}">
+                    <label for="{{ criteria.title }}">{{ criteria.title }}</label>
+                </div>
+            {% endfor %}
+
+            <a data-target="new_criteria" class="btn modal-trigger" onclick="send_value()">Сохранить</a>
+
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascript %}
+    <script>
+
+        function send_value() {
+            let cookie = document.cookie
+            let csrfToken = cookie.substring(cookie.indexOf('=') + 1)
+
+            let send_data = {
+            {% for criteria in month_obj.criteria.all %}
+                {{ criteria.id }}: document.getElementById({{ criteria.id }}).value,
+            {% endfor %}
+            }
+            console.log(send_data)
+            $.ajax({
+                type: "POST",
+                url: "{% url 'report' %}",
+                data: send_data,
+                success: function () {
+                    console.log('success')
+                },
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                },
+                contentType: "application/x-www-form-urlencoded"
+            });
+        }
+
+    </script>
+{% endblock javascript %}

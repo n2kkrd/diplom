@@ -1,0 +1,212 @@
+{% extends 'layouts/base_layout.html' %}
+{% block content %}
+
+    <!-- Modal new_report_staff Structure -->
+    <div id="staff_report" class="modal modal-fixed-footer">
+        <div class="modal-content">
+            <h4>Создать отчет по сотруднику</h4>
+            <div style="text-align: center;">
+                <div class='row'>
+                    <div class='input-field col s12'>
+                        <select id="myselect">
+                            <option value="" disabled selected>Сотрудник</option>
+                            {% for s in staff %}
+                                <option value="{{ s.id }}">{{ s.first_name }} {{ s.last_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for='staff'>Выберите сотрудника</label>
+                    </div>
+                    <a class="waves-effect waves-light btn left" id="staff_with_month" style="background: #a48282;">C
+                        месяца</a>
+                    <a class="waves-effect waves-light btn left" id="staff_by_month" style="background: #a48282;">По
+                        месяц</a>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-action modal-close waves-effect waves-green btn-flat" onclick="staff_report()">Создать
+                отчет
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Modal company_report Structure -->
+    <div id="company_report" class="modal modal-fixed-footer">
+        <div class="modal-content">
+            <h4>Создать общий отчет</h4>
+            <div style="text-align: center;">
+                <div class='row'>
+                    <a class="waves-effect waves-light btn left" id="company_with_month" style="background: #a48282;">C
+                        месяца</a>
+                    <a class="waves-effect waves-light btn left" id="company_by_month" style="background: #a48282;">По
+                        месяц</a>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-action modal-close waves-effect waves-green btn-flat" onclick="company_report()">
+                Создать отчет
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col s6" style="text-align: center;">
+            <br>
+            <h3>Отчеты сотрудников</h3>
+            <ul class="collection with-header">
+
+                <li class="collection-item">
+                    {% for report in staff_big_reports %}
+                        <div style="font-size:2vw;">
+                            {{ report.staff.first_name }} {{ report.staff.last_name }}  {{ report.first_year }}.{{ report.first_month }} - {{ report.last_year }}.{{ report.last_month }}
+                            <a class="secondary-content">
+                                <a href="{% url 'view_big_report' report_id=report.id %}"><i class="material-icons" style="font-size: 30px; cursor: pointer">view_list</i></a>
+                                <i class="material-icons" style="font-size: 30px; cursor: pointer" onclick="delete_big_report({{ report.id }})">delete</i>
+                            </a>
+                        </div>
+                        <br>
+                    {% endfor %}
+                </li>
+            </ul>
+
+            <br>
+            <div class="container">
+                <a class="waves-effect waves-light btn modal-trigger" href="#staff_report">Создать отчет по сотруднику</a>
+            </div>
+        </div>
+
+        <div class="col s6" style="text-align: center;">
+            <br>
+            <h3>Общие отчеты</h3>
+            <ul class="collection with-header">
+
+                <li class="collection-item">
+                    {% for report in company_big_reports %}
+                        <div style="font-size:2vw;">
+                            {{ report.first_year }}.{{ report.first_month }} - {{ report.last_year }}.{{ report.last_month }}
+                            <a class="secondary-content">
+                                <a href="{% url 'view_big_report' report_id=report.id %}"><i class="material-icons" style="font-size: 30px; cursor: pointer">view_list</i></a>
+                                <i class="material-icons" style="font-size: 30px; cursor: pointer" onclick="delete_big_report({{ report.id }})">delete</i>
+                            </a>
+                        </div>
+                        <br>
+                    {% endfor %}
+                </li>
+            </ul>
+
+            <br>
+            <div class="container">
+                <a class="waves-effect waves-light btn modal-trigger" href="#company_report">Создать общий отчет</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascript %}
+    <script>
+        let cookie = document.cookie
+        let csrfToken = cookie.substring(cookie.indexOf('=') + 1)
+
+        let staff_report_start = ymCal(
+            $("#staff_with_month"),
+            null,
+            "bottom",
+            null,
+            null,
+            function (event, month, year, misc) {
+                console.log("event=" + event + "; month=" + month + "; year=" + year);
+            },
+            5000,
+            -8
+        );
+
+        let staff_report_end = ymCal(
+            $("#staff_by_month"),
+            null,
+            "bottom",
+            null,
+            null,
+            function (event, month, year, misc) {
+                console.log("event=" + event + "; month=" + month + "; year=" + year);
+            },
+            5000,
+            -8
+        );
+
+        let company_report_start = ymCal(
+            $("#company_with_month"),
+            null,
+            "bottom",
+            null,
+            null,
+            function (event, month, year, misc) {
+                console.log("event=" + event + "; month=" + month + "; year=" + year);
+            },
+            5000,
+            -8
+        );
+
+        let company_report_end = ymCal(
+            $("#company_by_month"),
+            null,
+            "bottom",
+            null,
+            null,
+            function (event, month, year, misc) {
+                console.log("event=" + event + "; month=" + month + "; year=" + year);
+            },
+            5000,
+            -8
+        );
+
+        function staff_report() {
+            let staff = document.getElementsByClassName("select-dropdown")[0].value.split(' ');
+
+            let start_date = staff_report_start.get();
+            let end_date = staff_report_end.get();
+            send_data({
+                start_date_year: start_date.year,
+                start_date_month: start_date.month,
+                end_date_year: end_date.year,
+                end_date_month: end_date.month,
+                first_name: staff[0],
+                last_name: staff[1]
+            }, "POST")
+        }
+
+        function company_report() {
+            let start_date = company_report_start.get();
+            let end_date = company_report_end.get();
+            send_data({
+                start_date_year: start_date.year,
+                start_date_month: start_date.month,
+                end_date_year: end_date.year,
+                end_date_month: end_date.month
+            }, "POST")
+        }
+
+        function send_data(data, method) {
+            $.ajax({
+                type: method,
+                url: "{% url 'big_report' %}",
+                data: data,
+                success: function () {
+                    console.log('success')
+                    location.href = "{% url 'big_report' %}"
+                },
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                },
+                contentType: "application/x-www-form-urlencoded"
+            });
+        }
+
+        function delete_big_report(id_big_report) {
+            send_data({id_big_report: id_big_report}, "DELETE")
+        }
+
+
+    </script>
+{% endblock javascript %}
